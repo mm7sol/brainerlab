@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mm7sol/brainerlab/blob/main/data/schemas/dataset.schema.json",
+  "title": "BrainerLab circuit dataset (curated, bundled file)",
+  "description": "Schema for files in data/processed/*.json. Enforced by engine/neurolab_engine/connectome.py (Connectome) and documented in docs/datasets.md. weight=null means unknown/unquantified — never silently treated as 1 outside the documented model step.",
+  "type": "object",
+  "required": ["id", "species", "version", "source", "license", "completeness", "limitations", "nodes", "edges"],
+  "properties": {
+    "id": {"type": "string", "description": "Stable dataset identifier, e.g. c_elegans_reference_circuit"},
+    "species": {"type": "string", "description": "Species key from data/registry/datasets.json, e.g. caenorhabditis_elegans"},
+    "version": {"type": "string", "description": "Dataset version, e.g. 1.0.0"},
+    "name": {"type": "string"},
+    "source": {"type": ["string", "null"], "description": "Where the data came from (lab, archive, or 'BrainerLab' for own illustrative subsets)"},
+    "publication": {"type": ["string", "null"], "description": "Citable publication for the circuit identity or wiring data"},
+    "license": {"type": "string", "description": "Dataset licence. Code licence (MIT) never covers datasets."},
+    "citation": {"type": ["string", "null"]},
+    "download_url": {"type": ["string", "null"]},
+    "neurons": {"type": "string", "description": "Human-readable node scope, e.g. '16 neurons (6 sensory, 8 interneurons, 2 motor representatives)'"},
+    "synapses": {"type": "string", "description": "Human-readable edge scope"},
+    "completeness": {"type": "string", "description": "What the file covers — and what it does NOT cover"},
+    "limitations": {"type": "string"},
+    "status": {"type": "string", "enum": ["bundled", "download_on_demand", "metadata_only", "imported"]},
+    "type": {"type": "string", "description": "e.g. 'illustrative model subset (NOT observed weights)' vs 'observed biological data'"},
+    "position_note": {"type": "string", "description": "Present when x/y are schematic display-only coordinates, not measured anatomy"},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {"type": "string", "description": "Uppercase neuron identifier, e.g. AVAL"},
+          "class": {"type": ["string", "null"]},
+          "type": {"type": ["string", "null"], "enum": ["sensory", "interneuron", "motor", null]},
+          "region": {"type": ["string", "null"]},
+          "function": {"type": ["string", "null"], "description": "Functional note with cited source, not a new claim"},
+          "x": {"type": ["number", "null"], "description": "Schematic display coordinate only (see position_note)"},
+          "y": {"type": ["number", "null"], "description": "Schematic display coordinate only (see position_note)"},
+          "neurotransmitter": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"},
+          "kind": {"type": "string", "enum": ["chemical", "electrical"], "default": "chemical"},
+          "weight": {"type": ["number", "null"], "description": "null = unknown/unquantified (reference subsets); counts in Varshney-derived files"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+__pycache__/
+.venv/
+.idea/
+.vscode/
+*.pyc
+data/raw/*
+!data/raw/.gitkeep
+# Local experiment runs are runtime state (may contain exploratory work).
+# Only the curated reference experiment + examples/ are tracked.
+experiments/NL-EXP-*.json
+!experiments/NL-EXP-000001.json
+experiments/_counter.json
+backend/app/__pycache__/
+
+.vercel
+data/campus_store.json
+node_modules/
+.next/
+dist/
+data/imports/*.json
+!data/imports/.gitkeep
+
+# Secrets / deployment credentials — NEVER commit real values.
+# Only .env.example (placeholders) is tracked.
+.env*
+!.env.example
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Agent / editor tooling (local dev only, not part of the public repo).
+.agents/
+.claude/
+skills-lock.json

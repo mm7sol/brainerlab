@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mm7sol/brainerlab/blob/main/experiments/schema.json",
+  "title": "BrainerLab experiment record",
+  "description": "Schema for experiments/NL-EXP-######.json as built by engine/neurolab_engine/experiment.py (experiment_to_dict) and backend/app/main.py (simulate_experiment). Field-name mapping to the generic proposal: circuit -> dataset_id, circuit_version -> dataset_version, engine model -> model/model_version, interventions -> stimulus + manipulations_virtual_only, outputs -> results. Validation of incoming payloads is done by validate_experiment(); unknown models, parameters, neurons or edges are rejected with 422 and never silently ignored. Only experiments/NL-EXP-000001.json (reference) is tracked in git; all other runs are local runtime state (see .gitignore).",
+  "type": "object",
+  "required": ["experiment_id", "species", "dataset_id", "dataset_version", "model", "model_version", "parameters", "stimulus", "manipulations_virtual_only", "duration_ms", "seed", "engine_version", "created_utc", "dataset_provenance"],
+  "properties": {
+    "experiment_id": {"type": "string", "pattern": "^NL-EXP-[0-9]{6}$", "description": "Sequential id from new_experiment_id(); reference is NL-EXP-000001"},
+    "kind": {"type": "string", "const": "computational simulation (not biological evidence)"},
+    "research_question": {"type": ["string", "null"]},
+    "species": {"type": "string", "description": "Species key, e.g. caenorhabditis_elegans"},
+    "dataset_id": {"type": "string", "description": "Circuit used (= generic 'circuit'), e.g. c_elegans_reference_circuit"},
+    "dataset_version": {"type": "string", "description": "Dataset version (= generic 'circuit_version'), e.g. 1.0.0"},
+    "model": {"type": "string", "enum": ["iaf", "lif", "propagation"], "description": "Engine model (= generic 'engine' model name)"},
+    "model_version": {"type": "string", "description": "Model version, e.g. v1"},
+    "parameters": {"type": "object", "description": "Model parameters; keys must exist in the model defaults (docs/models.md), e.g. {} uses all defaults"},
+    "stimulus": {
+      "type": "array",
+      "description": "Current-injection interventions (= part of generic 'interventions')",
+      "items": {
+        "type": "object",
+        "required": ["neuron"],
+        "properties": {
+          "neuron": {"type": "string"},
+          "t_start_ms": {"type": "number"},
+          "t_end_ms": {"type": "number"},
+          "amplitude": {"type": "number"}
+        }
+      }
+    },
+    "manipulations_virtual_only": {
+      "type": "object",
+      "description": "Virtual manipulations touch the MODEL only, never biology (= part of generic 'interventions')",
+      "properties": {
+        "silence": {"type": "array", "items": {"type": "string"}},
+        "activate": {"type": "array", "items": {"type": "string"}},
+        "force_spike": {"type": "array", "items": {"type": "string"}},
+        "scale_weights": {"type": "array", "items": {"type": "object"}},
+        "remove_edges": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "duration_ms": {"type": "integer", "minimum": 1, "description": "Simulation length in ms (dt = 1 ms)"},
+    "seed": {"type": "integer", "description": "RNG seed. Same dataset + model + parameters + seed = byte-identical spike trains (tested)."},
+    "engine_version": {"type": "string", "description": "Engine version (ENGINE_VERSION), e.g. 0.1.0"},
+    "created_utc": {"type": "string", "format": "date-time"},
+    "author": {"type": "string", "description": "Optional campus display name that created the run"},
+    "dataset_provenance": {"$ref": "../data/schemas/provenance.schema.json"},
+    "results": {
+      "type": "object",
+      "description": "Outputs (= generic 'outputs'); present only after POST /api/simulations. GET /api/results/{id} returns 409 before that.",
+      "properties": {
+        "normal": {
+          "type": "object",
+          "properties": {
+            "spikes": {"type": "object", "description": "Map neuron id -> list of spike times in ms"},
+            "summary": {"type": "object", "description": "Per-neuron counts/rates, totals, and behavior_proxy (model proxy, never animal behaviour)"},
+            "meta": {"type": "object", "description": "model, model_version, duration_ms, seed, n_edges_used, electrical_edges_excluded"}
+          }
+        },
+        "modified": {
+          "type": "object",
+          "properties": {
+            "spikes": {"type": "object"},
+            "summary": {"type": "object"},
+            "meta": {"type": "object"}
+          }
+        },
+        "comparison": {
+          "type": "object",
+          "properties": {
+            "delta_total": {"type": "number"},
+            "pct_total": {"type": "number"},
+            "per_neuron": {"type": "array", "items": {"type": "object"}},
+            "behavior_delta": {"type": "number", "description": "Delta of the MODEL behaviour proxy, not animal behaviour"}
+          }
+        }
+      }
+    }
+  }
+}

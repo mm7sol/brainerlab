@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: BrainerLab — Open laboratory for exploring and experimenting with neural circuits
+version: 0.1.0
+date-released: 2026-09-18
+license: MIT
+# Public repository (created on first push).
+repository-code: https://github.com/mm7sol/brainerlab
+authors:
+  - family-names: BrainerLab contributors
+    affiliation: Open-source community
+abstract: Explore biological connectomes and run reproducible computational experiments (C. elegans first).
+keywords:
+  - connectomics
+  - computational-neuroscience
+  - neuro-AI
+  - reproducibility
+preferred-citation:
+  type: software
+  title: BrainerLab experimental platform
+  version: 0.1.0
+  year: 2026

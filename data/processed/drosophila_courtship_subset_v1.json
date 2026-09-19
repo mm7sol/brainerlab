@@ -1,0 +1,167 @@
+{
+  "id": "drosophila_courtship_subset",
+  "species": "drosophila_melanogaster",
+  "version": "1.0.0",
+  "source": "BrainerLab (assembled from cited review consensus, no new measurements)",
+  "publication": "Clowney et al. 2015, eLife; Kallman et al. 2015, eLife; Pavlou & Goodwin 2013 (pathway identity)",
+  "license": "MIT (BrainerLab own file; topology = cited consensus, no copied bulk data)",
+  "completeness": "ILLUSTRATIVE SUBSET ONLY: 9 cell types of the male courtship decision pathway, unweighted qualitative edges with E/I sign. NOT measured connectivity and NOT monosynaptic proof (functional convergence per Clowney 2015).",
+  "limitations": "Pathway-level only; intermediate neurons omitted; sim dynamics are model choices, not measurements. Dimorphism flags cite the stated sources per node.",
+  "nodes": [
+    {
+      "id": "PPK25",
+      "type": "sensory",
+      "class": "gustatory",
+      "region": "foreleg",
+      "x": -4.0,
+      "y": 2.5,
+      "dimorphism": "not-specified",
+      "function": "ppk25+ foreleg sensory; detects female pheromone 7,11-HD (Clowney 2015)"
+    },
+    {
+      "id": "FCELL",
+      "type": "sensory",
+      "class": "gustatory",
+      "region": "leg",
+      "x": -2.0,
+      "y": 2.5,
+      "dimorphism": "not-specified",
+      "function": "ppk23+ F cells; female-pheromone sensory, activate P1 (Kallman 2015)"
+    },
+    {
+      "id": "MCELL",
+      "type": "sensory",
+      "class": "gustatory",
+      "region": "leg",
+      "x": 0.0,
+      "y": 2.5,
+      "dimorphism": "not-specified",
+      "function": "ppk23+ M cells; male-pheromone sensory, drive mAL (Kallman 2015)"
+    },
+    {
+      "id": "GR32A",
+      "type": "sensory",
+      "class": "gustatory",
+      "region": "mouthparts",
+      "x": 2.0,
+      "y": 2.5,
+      "dimorphism": "not-specified",
+      "function": "Gr32a sensory; detects male pheromone 7-T, converges on mAL (review)"
+    },
+    {
+      "id": "OR67D",
+      "type": "sensory",
+      "class": "olfactory",
+      "region": "antenna",
+      "x": 4.0,
+      "y": 2.5,
+      "dimorphism": "not-specified",
+      "function": "Or67d olfactory; detects male pheromone cVA, parallel route to P1 (review)"
+    },
+    {
+      "id": "VAB3",
+      "type": "interneuron",
+      "class": "ascending",
+      "region": "VNC-SEZ-lpr",
+      "x": -3.0,
+      "y": 0.0,
+      "dimorphism": "dimorphic",
+      "function": "ascending excitatory relay, female-pheromone selective; feminization alters connectivity (Clowney 2015)"
+    },
+    {
+      "id": "MAL",
+      "type": "interneuron",
+      "class": "inhibitory",
+      "region": "SEZ-lpr",
+      "x": -1.0,
+      "y": 0.0,
+      "dimorphism": "dimorphic",
+      "function": "GABAergic, ~30 male vs ~5 female cells; gain control on P1 (Kimura 2005; Kallman 2015)"
+    },
+    {
+      "id": "P1",
+      "type": "interneuron",
+      "class": "command",
+      "region": "lateral protocerebrum",
+      "x": 1.5,
+      "y": 0.0,
+      "dimorphism": "male-specific",
+      "function": "male-specific courtship command (~30 cells); excitation triggers sustained courtship (Kohatsu 2011)"
+    },
+    {
+      "id": "P2B",
+      "type": "interneuron",
+      "class": "relay",
+      "region": "lpr-thoracic",
+      "x": 3.5,
+      "y": -1.5,
+      "dimorphism": "not-specified",
+      "function": "courtship relay P1>dendrites superimposed; descending to thoracic motor (review)"
+    }
+  ],
+  "edges": [
+    {
+      "source": "PPK25",
+      "target": "VAB3",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "VAB3",
+      "target": "P1",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "VAB3",
+      "target": "MAL",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "FCELL",
+      "target": "P1",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "MCELL",
+      "target": "MAL",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "GR32A",
+      "target": "MAL",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "OR67D",
+      "target": "MAL",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    },
+    {
+      "source": "MAL",
+      "target": "P1",
+      "kind": "chemical",
+      "weight": null,
+      "sign": -1
+    },
+    {
+      "source": "P1",
+      "target": "P2B",
+      "kind": "chemical",
+      "weight": null,
+      "sign": 1
+    }
+  ]
+}

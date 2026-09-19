@@ -1,0 +1,15 @@
+{
+  "$comment": "Example POST /api/experiments payload (not a stored record). Uses only defaults: model lif v1, engine 0.1.0 semantics, seed 42. The stored record (see experiments/schema.json and the reference experiments/NL-EXP-000001.json) adds experiment_id, versions, provenance and — after POST /api/simulations — results. Re-running the reference with this payload reproduces NL-EXP-000001 up to the id/timestamp.",
+  "species": "caenorhabditis_elegans",
+  "dataset_id": "c_elegans_reference_circuit",
+  "model": "lif",
+  "parameters": {},
+  "duration_ms": 200,
+  "seed": 42,
+  "stimulus": [
+    {"neuron": "PLML", "t_start_ms": 10, "t_end_ms": 60, "amplitude": 50.0},
+    {"neuron": "PLMR", "t_start_ms": 10, "t_end_ms": 60, "amplitude": 50.0}
+  ],
+  "manipulations": {"silence": ["PVCL"]},
+  "research_question": "Reference: how does virtual inhibition of PVCL alter posterior-touch propagation in the lif model?"
+}

@@ -1,0 +1,336 @@
+{
+  "id": "c_elegans_reference_circuit",
+  "species": "caenorhabditis_elegans",
+  "version": "1.0.0",
+  "source": "BrainerLab (curated from cited textbook circuit)",
+  "publication": "Chalfie et al. 1985; Wicks & Rankin 1995 (circuit identity)",
+  "license": "MIT (own file; no copied bulk data)",
+  "completeness": "ILLUSTRATIVE SUBSET ONLY: touch-withdrawal circuit, 16 nodes / 23 directed qualitative edges. NOT a connectome.",
+  "limitations": "Unweighted edges; schematic coordinates display-only; dynamics are model choices.",
+  "position_note": "x,y are schematic layout for display only, not measured anatomy.",
+  "nodes": [
+    {
+      "id": "ALML",
+      "class": "ALM",
+      "type": "sensory",
+      "region": "head",
+      "function": "anterior gentle-touch mechanosensory",
+      "x": -8,
+      "y": 6,
+      "neurotransmitter": null
+    },
+    {
+      "id": "ALMR",
+      "class": "ALM",
+      "type": "sensory",
+      "region": "head",
+      "function": "anterior gentle-touch mechanosensory",
+      "x": -8,
+      "y": -6,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVM",
+      "class": "AVM",
+      "type": "sensory",
+      "region": "head",
+      "function": "anterior gentle-touch mechanosensory",
+      "x": -6,
+      "y": 0,
+      "neurotransmitter": null
+    },
+    {
+      "id": "PLML",
+      "class": "PLM",
+      "type": "sensory",
+      "region": "tail",
+      "function": "posterior gentle-touch mechanosensory",
+      "x": 8,
+      "y": 5,
+      "neurotransmitter": null
+    },
+    {
+      "id": "PLMR",
+      "class": "PLM",
+      "type": "sensory",
+      "region": "tail",
+      "function": "posterior gentle-touch mechanosensory",
+      "x": 8,
+      "y": -5,
+      "neurotransmitter": null
+    },
+    {
+      "id": "PVM",
+      "class": "PVM",
+      "type": "sensory",
+      "region": "tail",
+      "function": "posterior mechanosensory",
+      "x": 6,
+      "y": 0,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVAL",
+      "class": "AVA",
+      "type": "interneuron",
+      "region": "head",
+      "function": "command: backward locomotion",
+      "x": -3,
+      "y": 3,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVAR",
+      "class": "AVA",
+      "type": "interneuron",
+      "region": "head",
+      "function": "command: backward locomotion",
+      "x": -3,
+      "y": -3,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVBL",
+      "class": "AVB",
+      "type": "interneuron",
+      "region": "head",
+      "function": "command: forward locomotion",
+      "x": -1,
+      "y": 3,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVBR",
+      "class": "AVB",
+      "type": "interneuron",
+      "region": "head",
+      "function": "command: forward locomotion",
+      "x": -1,
+      "y": -3,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVDL",
+      "class": "AVD",
+      "type": "interneuron",
+      "region": "head",
+      "function": "anterior touch relay",
+      "x": -5,
+      "y": 2,
+      "neurotransmitter": null
+    },
+    {
+      "id": "AVDR",
+      "class": "AVD",
+      "type": "interneuron",
+      "region": "head",
+      "function": "anterior touch relay",
+      "x": -5,
+      "y": -2,
+      "neurotransmitter": null
+    },
+    {
+      "id": "PVCL",
+      "class": "PVC",
+      "type": "interneuron",
+      "region": "tail",
+      "function": "posterior touch relay",
+      "x": 4,
+      "y": 2,
+      "neurotransmitter": null
+    },
+    {
+      "id": "PVCR",
+      "class": "PVC",
+      "type": "interneuron",
+      "region": "tail",
+      "function": "posterior touch relay",
+      "x": 4,
+      "y": -2,
+      "neurotransmitter": null
+    },
+    {
+      "id": "DA1",
+      "class": "DA",
+      "type": "motor",
+      "region": "ventral_cord",
+      "function": "dorsal A-type motor (backward)",
+      "x": 1,
+      "y": 4,
+      "neurotransmitter": null
+    },
+    {
+      "id": "VB1",
+      "class": "VB",
+      "type": "motor",
+      "region": "ventral_cord",
+      "function": "ventral B-type motor (forward)",
+      "x": 1,
+      "y": -4,
+      "neurotransmitter": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "ALML",
+      "target": "AVDL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "ALMR",
+      "target": "AVDR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "ALML",
+      "target": "AVAL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "ALMR",
+      "target": "AVAR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVM",
+      "target": "AVDL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVM",
+      "target": "AVDR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVM",
+      "target": "AVAL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVM",
+      "target": "PVCL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PLML",
+      "target": "PVCL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PLMR",
+      "target": "PVCR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PVM",
+      "target": "PVCL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PVM",
+      "target": "PVCR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVDL",
+      "target": "AVAL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVDR",
+      "target": "AVAR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVDL",
+      "target": "AVBL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVDR",
+      "target": "AVBR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PVCL",
+      "target": "AVBL",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PVCR",
+      "target": "AVBR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "PVCL",
+      "target": "AVAR",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVAL",
+      "target": "DA1",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVAR",
+      "target": "DA1",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVBL",
+      "target": "VB1",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    },
+    {
+      "source": "AVBR",
+      "target": "VB1",
+      "kind": "chemical",
+      "weight": null,
+      "provenance": "textbook circuit consensus (qualitative)"
+    }
+  ]
+}

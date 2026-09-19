@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mm7sol/brainerlab/blob/main/data/schemas/provenance.schema.json",
+  "$title": "BrainerLab provenance block",
+  "description": "Embedded in every experiment record as 'dataset_provenance' (see experiments/schema.json) and served via GET /api/provenance/{id}. Keys mirror data/registry/datasets.json so the chain dataset -> version -> source -> publication -> transformation -> simulation -> result is always traceable. Documented in docs/data-provenance.md.",
+  "type": "object",
+  "required": ["source", "publication", "license", "completeness", "limitations"],
+  "properties": {
+    "source": {"type": ["string", "null"], "description": "Origin of the data (lab/archive, or 'user upload' for unverified imports)"},
+    "publication": {"type": ["string", "null"], "description": "Citable publication, if any"},
+    "license": {"type": "string", "description": "Dataset licence governing redistribution"},
+    "citation": {"type": ["string", "null"], "description": "Full citation string"},
+    "completeness": {"type": "string", "description": "Scope of the dataset version used"},
+    "limitations": {"type": "string", "description": "Known gaps; always shown alongside results"},
+    "transformation": {"type": "string", "description": "Processing applied (script + version), e.g. 'scripts/ingest_varshney.py -> data/processed/c_elegans_varshney2011_v1.json'"},
+    "model_version": {"type": "string", "description": "Computational model name + version used in the run"},
+    "engine_version": {"type": "string", "description": "Engine version (engine/neurolab_engine ENGINE_VERSION), e.g. 0.1.0"}
+  }
+}

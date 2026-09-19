@@ -1,0 +1,12 @@
+# Vercel upload allowlist: present => replaces .gitignore for `vercel deploy`.
+# Intentionally does NOT exclude experiments/ so the bundled reference
+# experiment NL-EXP-000001.json is uploaded (faster cold starts).
+__pycache__/
+*.pyc
+.venv/
+.idea/
+.vscode/
+frontend/node_modules/
+frontend/.next/
+data/raw/*
+!data/raw/.gitkeep

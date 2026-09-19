@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BrainerLab — Explore biological brains. Build computational experiments.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script type="importmap">
+{"imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <button class="brand" data-tab="home" title="BrainerLab home"><img src="logo.png" alt="BrainerLab logo">BRAINERLAB</button>
+  <nav id="nav" aria-label="Primary">
+    <button data-tab="explore">Explore</button>
+    <button data-tab="species">Species</button>
+    <button data-tab="datasets">Datasets</button>
+    <button data-tab="lab">Experiment Lab</button>
+    <button data-tab="experiments">Experiments</button>
+    <button data-tab="research">Research</button>
+    <button data-tab="api">API</button>
+    <button data-tab="campus">Campus</button>
+  </nav>
+  <div class="sysstat" title="All outputs on this platform are computational simulations"><span class="dot"></span><span class="mono">COMPUTATIONAL&nbsp;MODE</span></div>
+  <a class="xlink" href="https://x.com/BrainerLab" target="_blank" rel="noopener" title="Follow BrainerLab on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="mono">FOLLOW</span></a>
+</header>
+
+<main>
+<!-- ============ HOME / HERO ============ -->
+<section id="tab-home" class="tab active">
+  <div class="hero">
+    <canvas id="hero-viz" width="960" height="640"></canvas>
+    <div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb orb-c"></div><div class="orb orb-d"></div>
+    <div class="hero-copy">
+      <div class="eyebrow">COMPUTATIONAL NEUROSCIENCE</div>
+      <h1 class="hero-title">Explore biological brains.<br>Build computational experiments.</h1>
+      <p class="sub">An open platform for connectomics, computational neuroscience and Neuro-AI research.</p>
+      <div class="cta-row">
+        <button class="btn-primary" data-tab="datasets">Explore datasets <span aria-hidden="true">→</span></button>
+        <button class="btn-ghost" data-tab="lab">Open Experiment Lab <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="steps">
+        <button data-tab="datasets"><span class="mono">01 · EXPLORE</span>Browse circuits & datasets</button>
+        <button data-tab="lab"><span class="mono">02 · SIMULATE</span>Run a virtual experiment</button>
+        <button data-tab="campus"><span class="mono">03 · REPRESENT</span>Join your university</button>
+      </div>
+      <div class="statstrip" id="home-stats"></div>
+      <div class="mono micro dim hero-cap">SIGNAL PROPAGATION MODEL · SCHEMATIC · ILLUSTRATIVE</div>
+    </div>
+  </div>
+
+  <div class="method" role="note" aria-label="Scientific methodology">
+    <div class="method-row">
+      <div class="method-cell"><div class="micro">OBSERVED DATA</div></div>
+      <div class="method-neq">≠</div>
+      <div class="method-cell"><div class="micro">COMPUTATIONAL MODEL</div></div>
+      <div class="method-neq">≠</div>
+      <div class="method-cell"><div class="micro">SIMULATION</div></div>
+      <div class="method-neq">≠</div>
+      <div class="method-cell"><div class="micro">AI INTERPRETATION</div></div>
+    </div>
+    <p class="method-sub">Simulations on this platform are never biological proof. Every claim carries its source.</p>
+  </div>
+
+  <div class="instrument">
+    <div class="inst-head">
+      <div><div class="eyebrow">REFERENCE EXPERIMENT</div>
+      <h2 class="inst-title">EXPERIMENT / <span class="mono">NL-EXP-000001</span></h2></div>
+      <a href="#" class="mono linklike" data-goto-exp="NL-EXP-000001">OPEN RECORD →</a>
+    </div>
+    <p class="sub">Posterior stimulus propagation in the <i>C. elegans</i> reference circuit — virtual inhibition of <b>PVCL</b> during posterior stimulus (lif model, seed 42).</p>
+    <div class="inst-grid">
+      <div class="inst-viz">
+        <div class="viz-head"><span class="mono micro">CIRCUIT RESPONSE · SPIKE ACTIVITY</span><span class="mono micro dim" id="demo-viz-src">—</span></div>
+        <canvas id="demo-viz" width="640" height="360"></canvas>
+      </div>
+      <div class="inst-meta">
+        <div class="meta-row"><span class="micro dim">SPECIES</span><span class="mono">C. elegans</span></div>
+        <div class="meta-row"><span class="micro dim">MODEL</span><span class="mono">lif · reference circuit</span></div>
+        <div class="meta-row"><span class="micro dim">STIMULUS</span><span class="mono">PLML/PLMR 10–60 ms</span></div>
+        <div class="meta-row"><span class="micro dim">LESION (VIRTUAL)</span><span class="mono">PVCL silenced</span></div>
+        <div class="meta-row"><span class="micro dim">SEED</span><span class="mono">42</span></div>
+        <div class="meta-row"><span class="micro dim">STATUS</span><span class="mono ok">SIMULATION</span></div>
+        <div class="meta-row result"><span class="micro dim">RESULT</span><span class="mono" id="demo-result">—</span></div>
+        <button class="btn-primary" id="demo-run">Run simulation <span aria-hidden="true">→</span></button>
+        <div id="demo-out" class="mono demo-out"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPECIES ============ -->
+<section id="tab-species" class="tab">
+  <div class="eyebrow">BIOLOGICAL MODELS</div>
+  <h1>Species explorer</h1>
+  <p class="sub">Organisms under study. Dataset availability reflects the registry — nothing more.</p>
+  <div id="species-list" class="species-rows"></div>
+</section>
+
+<!-- ============ DATASETS ============ -->
+<section id="tab-datasets" class="tab">
+  <div class="eyebrow">REFERENCE DATA</div>
+  <h1>Dataset registry</h1>
+  <p class="note">Counts are scoped to their dataset — never read as absolute scientific truth. Full provenance per dataset.</p>
+  <div class="panel" style="margin-bottom:1em">
+    <div class="micro dim">IMPORT YOUR OWN CIRCUIT (JSON · CSV EDGE-LIST)</div>
+    <p class="note">JSON: <span class="mono">{"nodes": [...], "edges": [...]}</span> — or CSV edge-list: <span class="mono">source,target[,kind,weight]</span> (header auto-detected, comma/semicolon/tab).<br>
+    ≤10 000 nodes · ≤100 000 edges · ≤4 MB · whole brains welcome at circuit scale · ids uppercased on import · usable in Explorer + Lab · always labelled unverified, model-only.<br>
+    Simulations are capped at 750 000 neuron-steps (duration × nodes): shorten the duration for very large circuits.</p>
+    <div class="toolbar"><label class="filebtn" for="imp-file">Choose file</label><span id="imp-filename" class="note">No file chosen</span>
+    <input type="file" id="imp-file" accept=".json,.csv,.tsv,.txt,application/json" hidden>
+    <input id="imp-name" placeholder="Dataset name" style="width:13em" maxlength="120">
+    <select id="imp-species"><option value="custom">species: custom</option><option value="caenorhabditis_elegans">C. elegans</option><option value="drosophila_melanogaster">Drosophila</option><option value="danio_rerio">zebrafish</option><option value="mus_musculus">mouse</option></select>
+    <button id="imp-template" class="btn-ghost">Template</button>
+    <button id="imp-template-csv" class="btn-ghost">CSV template</button>
+    <button id="imp-run" class="btn-primary">Import</button></div>
+    <div id="imp-status" class="mono" style="font-size:.8em;color:var(--mut)"></div>
+  </div>
+  <div id="dataset-list" class="ds-rows"></div>
+</section>
+
+<!-- ============ EXPLORE ============ -->
+<section id="tab-explore" class="tab">
+  <div class="eyebrow">CONNECTOMICS</div>
+  <h1>Connectome Explorer <span class="tag mono" id="exp-ds-tag"></span></h1>
+  <div class="toolbar panel">
+    <select id="exp-dataset" aria-label="Dataset"></select>
+    <span class="searchwrap"><input id="exp-search" placeholder="Search neuron (e.g. AVAL)" autocomplete="off"><div id="exp-suggest"></div></span>
+    <select id="exp-type" aria-label="Neuron type"><option value="">type: all</option><option>sensory</option><option>interneuron</option><option>motor</option></select>
+    <select id="exp-region" aria-label="Region"><option value="">region: all</option></select>
+    <select id="exp-dir" aria-label="Direction"><option value="both">direction: both</option><option value="out">out</option><option value="in">in</option></select>
+    <label class="mono micro">depth <input id="exp-depth" type="number" value="1" min="0" max="3"></label>
+    <button id="exp-subgraph" class="btn-primary">Show subgraph of selection</button>
+    <button id="exp-reset" class="btn-ghost">Full graph</button>
+    <span class="seg" role="group" aria-label="View mode"><button id="view-2d" class="active">2D</button><button id="view-3d">3D</button></span>
+  </div>
+  <div class="explorer">
+    <div class="graph-panel">
+      <div class="viz-head"><span class="mono micro">CIRCUIT GRAPH</span><span class="mono micro dim" id="graph-hint">ZOOM: WHEEL · PAN: DRAG · SELECT: CLICK</span></div>
+      <canvas id="net" width="900" height="560"></canvas>
+      <div id="net-tip" class="mono"></div>
+      <div id="view3d" style="display:none"><div id="node3d-label" class="mono"></div></div>
+      <div class="legend mono"><span><i class="sw" style="background:#6FB1FF"></i>SENSORY</span><span><i class="sw" style="background:#9B8FFF"></i>INTERNEURON</span><span><i class="sw" style="background:#E0B26A"></i>MOTOR</span><span class="dim">— CHEMICAL</span><span class="dim faint">— ELECTRICAL</span></div>
+    </div>
+    <aside id="node-panel"><div class="micro dim">NEURON INSPECTOR</div><div id="node-info">Click a node, or search.</div></aside>
+  </div>
+  <p class="note">Large graphs: only subgraphs are rendered (cap 400 nodes). Hover: preview · Click: select · Double-click: focus 1-hop · Wheel: zoom at cursor · Drag: pan.</p>
+</section>
+
+<!-- ============ LAB ============ -->
+<section id="tab-lab" class="tab">
+  <div class="eyebrow">VIRTUAL MANIPULATION — MODEL ONLY, NEVER BIOLOGICAL</div>
+  <h1>Experiment Lab</h1>
+  <div class="labgrid">
+    <div class="panel params">
+      <div class="micro dim">PARAMETERS</div>
+      <label>Dataset <select id="lab-dataset"></select></label>
+      <label>Model <select id="lab-model"><option value="lif">lif (leaky integrate-and-fire)</option><option value="iaf">iaf (integrate-and-fire)</option><option value="propagation">propagation (abstract cascade)</option></select></label>
+      <label>Research question <input id="lab-rq" placeholder="e.g. Does virtual PVCL inhibition reduce posterior propagation?"></label>
+      <div class="row2">
+        <label>Duration (ms) <input id="lab-dur" type="number" value="200" min="10" max="5000"></label>
+        <label>Seed <input id="lab-seed" type="number" value="42"></label>
+      </div>
+      <label>Stimulus (one per line: NEURON t0 t1 amp) <textarea id="lab-stim" rows="3">PLML 10 60 50
+PLMR 10 60 50</textarea><span class="hint">Each line: neuron id, start ms, end ms, amplitude. Example stimulates both posterior touch neurons from 10 to 60 ms.</span></label>
+      <label>Silence (virtual inhibition, comma-separated) <input id="lab-silence" value="PVCL"><span class="hint">Neurons held silent in the modified arm only — the normal arm always runs untouched.</span></label>
+      <label>Activate (virtual, comma-separated) <input id="lab-activate" value=""></label>
+      <label>Remove edges (one per line: SRC TGT kind) <textarea id="lab-remove" rows="2"></textarea></label>
+      <button id="lab-run" class="btn-primary">Create + simulate (normal vs modified)</button>
+      <div id="lab-status" class="mono"></div>
+    </div>
+    <div class="panel output">
+      <div class="micro dim">RASTER — MODIFIED ARM</div>
+      <canvas id="raster" width="640" height="320"></canvas>
+      <div class="micro dim">COMPARISON — NORMAL VS MODIFIED</div>
+      <div id="lab-compare"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIMENTS ============ -->
+<section id="tab-experiments" class="tab">
+  <div class="eyebrow">REPRODUCIBILITY</div>
+  <h1>Experiments</h1>
+  <div class="exp-layout">
+    <div id="exp-list" class="panel"></div>
+    <div id="exp-detail" class="panel"></div>
+  </div>
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section id="tab-research" class="tab">
+  <div class="eyebrow">EXPERIMENTAL REPORT</div>
+  <h1>Research report</h1>
+  <div class="toolbar panel"><input id="rep-id" value="NL-EXP-000001" class="mono"><button id="rep-load" class="btn-primary">Load report</button></div>
+  <div id="report" class="panel"></div>
+</section>
+
+<!-- ============ API ============ -->
+<section id="tab-api" class="tab">
+  <div class="eyebrow">MACHINE INTERFACE</div>
+  <h1>Research API</h1>
+  <p>Interactive docs: <a href="/docs">/docs</a> · <a href="/openapi.json">/openapi.json</a></p>
+  <table id="api-table"></table>
+  <h2>BrainerLab AI <span class="tag">rule-based, labelled</span></h2>
+  <div class="toolbar panel"><input id="ai-q" placeholder="Ask: hubs? dataset? ..." style="width:24em">
+  <input id="ai-neuron" placeholder="neuron (optional)" style="width:10em">
+  <input id="ai-exp" placeholder="experiment (optional)" style="width:12em">
+  <button id="ai-ask" class="btn-primary">Ask</button></div>
+  <pre id="ai-out"></pre>
+</section>
+
+<!-- ============ CAMPUS ============ -->
+<section id="tab-campus" class="tab">
+  <div class="eyebrow">GLOBAL ACADEMIC NETWORK</div>
+  <h1>University Campus</h1>
+  <p class="sub">Join a university to represent it. One affiliation per account — joining a new university switches your representation.</p>
+  <div id="campus-status" class="mono micro" style="margin:.4em 0"></div>
+  <div class="campus-grid">
+    <div class="panel">
+      <div class="micro dim">FIND YOUR UNIVERSITY</div>
+      <div class="toolbar"><input id="campus-q" placeholder="Search name or domain…" style="flex:1;min-width:10em">
+      <select id="campus-country"><option value="">all countries</option></select>
+      <button id="campus-search" class="btn-primary">Search</button></div>
+      <div id="campus-results"><span class="note">Type a name above, or browse by country.</span></div>
+    </div>
+    <div>
+      <div class="panel" id="campus-auth"></div>
+      <div class="panel" id="campus-mine" style="margin-top:1em"></div>
+      <div class="panel" id="campus-board" style="margin-top:1em"></div>
+    </div>
+  </div>
+  <div class="panel" id="campus-members" style="margin-top:1.2em"><div class="micro dim">REPRESENTATIVES</div><div id="campus-members-body"><span class="note">Select a university to see its representatives.</span></div></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="tab-about" class="tab">
+  <div class="eyebrow">SCIENTIFIC SAFETY</div>
+  <h1>About</h1>
+  <div class="panel">
+  <p>BrainerLab distinguishes <b>observed data</b>, <b>computational models</b>, <b>simulation results</b>
+  and <b>AI interpretations</b>. A simulation result is not evidence about the animal. Quantitative claims
+  require cited sources (see Datasets). Code: MIT (data keeps its own licence).</p>
+  <div class="micro dim">ROADMAP</div>
+  <ol class="roadmap mono">
+    <li><b>M1</b> architecture + C. elegans — this prototype</li>
+    <li><b>M2</b> explorer / 3D</li>
+    <li><b>M3</b> engine</li>
+    <li><b>M4</b> lab</li>
+    <li><b>M5</b> reproducibility pages</li>
+    <li><b>M6</b> AI</li>
+    <li><b>M7</b> Drosophila / FlyWire</li>
+    <li><b>M8</b> zebrafish</li>
+    <li><b>M9</b> mouse</li>
+    <li><b>M10</b> API / collaboration</li>
+  </ol>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <div><span class="brand-sm">BRAINERLAB</span> <span class="mono micro dim">COMPUTATIONAL SIMULATIONS ONLY</span></div>
+    <div class="mono micro"><button class="linklike" data-tab="about">ABOUT + SAFETY</button> · <a href="/docs">API DOCS</a></div>
+  </div>
+  <div class="mono micro dim">OBSERVED DATA ≠ MODEL ≠ SIMULATION ≠ AI INTERPRETATION — EVERY CLAIM CARRIES ITS SOURCE.</div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
