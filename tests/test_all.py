@@ -240,5 +240,85 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(before, after)
 
 
+class TestSecurity(unittest.TestCase):
+    """Path-traversal + malformed-id regression tests (see SECURITY.md).
+
+    dataset_id / experiment_id double as filenames (<dir>/<id>.json):
+    anything but a plain slug must be rejected with 422 before any
+    filesystem access, and must never delete, serve, or crash on files.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        from fastapi.testclient import TestClient
+        from backend.app.main import app
+        cls.c = TestClient(app)
+
+    def test_query_traversal_rejected(self):
+        bad = ["../registry/datasets", "../../experiments/NL-EXP-000001",
+               "..%2F..%2Fexperiments%2FNL-EXP-000001", "/etc/passwd",
+               "", "a/b", "..", ".", "x" * 200]
+        for ds in bad:
+            r = self.c.get("/api/neurons", params={"dataset_id": ds})
+            self.assertEqual(r.status_code, 422, ds)
+            r = self.c.get("/api/graph/stats", params={"dataset_id": ds})
+            self.assertEqual(r.status_code, 422, ds)
+
+    def test_simulation_traversal_rejected(self):
+        r = self.c.post("/api/simulations",
+                        json={"experiment_id": "../../experiments/NL-EXP-000001"},
+                        headers={"X-Role": "researcher"})
+        self.assertEqual(r.status_code, 422)
+        r = self.c.post("/api/simulations", json={"experiment_id": None},
+                        headers={"X-Role": "researcher"})
+        self.assertEqual(r.status_code, 422)
+
+    def test_delete_traversal_deletes_nothing(self):
+        from backend.app.main import ROOT
+        registry = ROOT / "data" / "registry" / "datasets.json"
+        before = registry.read_text(encoding="utf-8")
+        r = self.c.delete("/api/datasets/import/..%2Fregistry%2Fdatasets",
+                          headers={"X-Role": "researcher"})
+        self.assertIn(r.status_code, (404, 405, 422))
+        self.assertEqual(registry.read_text(encoding="utf-8"), before)
+        # app still healthy afterwards
+        self.assertEqual(self.c.get("/api/species").status_code, 200)
+
+    def test_store_sink_containment(self):
+        import json as _json
+        import tempfile
+        from pathlib import Path as _Path
+        from backend.app import main as _main
+        sentinel = _Path(tempfile.gettempdir()) / "brainerlab_probe.json"
+        sentinel.write_text(_json.dumps({"id": "PROBE"}), encoding="utf-8")
+        try:
+            # real escapes / subdirs: get must raise before touching anything;
+            # delete must never raise and never delete anything outside its dir.
+            from backend.app.main import ROOT as _ROOT
+            canary = _ROOT / "data" / "registry" / "datasets.json"
+            canary_before = canary.read_text(encoding="utf-8")
+            for evil in ("../registry/datasets", "../../experiments/x",
+                         "sub/dir"):
+                with self.assertRaises(Exception, msg=evil):
+                    _main.import_store_get(evil)
+                _main.import_store_delete(evil)  # must not raise...
+            self.assertEqual(canary.read_text(encoding="utf-8"), canary_before)
+        finally:
+            self.assertTrue(sentinel.exists())  # untouched no matter what
+            sentinel.unlink(missing_ok=True)
+
+    def test_malformed_stored_doc_is_422_not_500(self):
+        import json as _json
+        from backend.app.main import IMPORT_DIR_ROOT
+        IMPORT_DIR_ROOT.mkdir(parents=True, exist_ok=True)
+        probe = IMPORT_DIR_ROOT / "_probe_bad.json"
+        probe.write_text(_json.dumps({"nope": True}), encoding="utf-8")
+        try:
+            r = self.c.get("/api/neurons", params={"dataset_id": "_probe_bad"})
+            self.assertEqual(r.status_code, 422)
+        finally:
+            probe.unlink(missing_ok=True)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

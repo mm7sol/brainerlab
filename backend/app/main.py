@@ -33,6 +33,31 @@ EXP_DIR = EXP_DIR_TMP if ON_VERCEL else EXP_DIR_ROOT
 STATIC = Path(__file__).resolve().parent / "static"
 MAX_SUBGRAPH_NODES = 400
 
+# ---------------------------------------------------------------- input validation (security)
+# Dataset / experiment ids double as filenames (<dir>/<id>.json) and KV keys.
+# They must be plain slugs: anything else (slashes, dots, ..) is rejected
+# with 422 before any filesystem or store access. See tests/test_all.py::TestSecurity.
+ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,120}$")
+
+
+def _check_id(value, what="id"):
+    if not isinstance(value, str) or not ID_RE.match(value):
+        raise HTTPException(422, f"invalid {what}: {str(value)[:64]!r} "
+                                 f"(allowed: letters, digits, '_' and '-', max 121 chars)")
+    return value
+
+
+def _safe_path(base: Path, name: str) -> Path:
+    """Containment net: <base>/<name>.json must resolve to a direct child of base."""
+    p = base / f"{name}.json"
+    try:
+        inside = p.resolve().relative_to(base.resolve())
+    except (ValueError, OSError):
+        raise HTTPException(422, "invalid id (path escape)")
+    if len(inside.parts) != 1:
+        raise HTTPException(422, "invalid id (path escape)")
+    return p
+
 app = FastAPI(title="BrainerLab API", version="0.1.0",
               description="Reproducible computational experiments on connectomes. "
                           "Simulations are computational models, not biological evidence.")
@@ -58,7 +83,10 @@ def load_datasets():
             if did not in _datasets:
                 doc = import_store_get(did)
                 if doc:
-                    _remember_import(doc)
+                    try:
+                        _remember_import(doc)
+                    except (ValueError, KeyError):
+                        continue  # malformed file on disk: skip, never crash startup
 
 
 def registry_entry(dataset_id):
@@ -69,11 +97,15 @@ def registry_entry(dataset_id):
 
 
 def dataset_or_404(dataset_id):
+    _check_id(dataset_id, "dataset")
     if dataset_id in _datasets:
         return _datasets[dataset_id]
     doc = import_store_get(dataset_id)
     if doc is not None:
-        _remember_import(doc)
+        try:
+            _remember_import(doc)
+        except (ValueError, KeyError):
+            raise HTTPException(422, f"stored dataset '{dataset_id}' is not a valid circuit")
         return doc
     raise HTTPException(404, f"unknown dataset '{dataset_id}'. "
                              f"Available: {sorted(_datasets)}")
@@ -263,7 +295,7 @@ def import_store_get(dataset_id):
         except Exception:
             return None
     for d in (IMPORT_DIR, IMPORT_DIR_ROOT):
-        p = d / f"{dataset_id}.json"
+        p = _safe_path(d, dataset_id)
         if p.exists():
             return _read_json_silent(p)
     return None
@@ -322,12 +354,14 @@ def import_store_delete(dataset_id):
         return
     for d in (IMPORT_DIR, IMPORT_DIR_ROOT):
         try:
-            (d / f"{dataset_id}.json").unlink(missing_ok=True)
+            _safe_path(d, dataset_id).unlink(missing_ok=True)
         except Exception:
             continue
 
 
 def _remember_import(doc):
+    if not isinstance(doc, dict) or not isinstance(doc.get("id"), str):
+        raise ValueError("not a circuit document")
     _datasets[doc["id"]] = doc
     _connectomes[doc["id"]] = Connectome(doc)
     _imported_ids.add(doc["id"])
@@ -348,7 +382,7 @@ def import_meta_entry(doc):
 
 
 def exp_path(exp_id):
-    return EXP_DIR / f"{exp_id}.json"
+    return _safe_path(EXP_DIR, exp_id)
 
 
 def _read_json_silent(p: Path):
@@ -359,7 +393,7 @@ def _read_json_silent(p: Path):
 
 
 def read_experiment(exp_id):
-    exp_id = exp_id.upper()
+    exp_id = _check_id((exp_id or ""), "experiment").upper()
     # 0. shared KV first (when configured — survives serverless restarts)
     hit = kv_exp_get(exp_id)
     if hit:
@@ -369,7 +403,7 @@ def read_experiment(exp_id):
     if p.exists():
         return json.loads(p.read_text(encoding="utf-8"))
     # 2. fallback: bundled reference in the repo (Vercel read-only FS)
-    fallback = EXP_DIR_ROOT / f"{exp_id}.json"
+    fallback = _safe_path(EXP_DIR_ROOT, exp_id)
     if fallback.exists():
         return json.loads(fallback.read_text(encoding="utf-8"))
     raise HTTPException(404, f"unknown experiment '{exp_id}'")
@@ -542,9 +576,15 @@ def get_datasets(species: str | None = None):
                     "bundled_edges": len(bundled["edges"]) if bundled else None})
     for did, e in import_store_metas().items():
         if did not in _datasets:
-            doc = import_store_get(did)
+            try:
+                doc = import_store_get(did)
+            except HTTPException:
+                continue  # unservable id: skip, never fail the listing
             if doc:
-                _remember_import(doc)
+                try:
+                    _remember_import(doc)
+                except (ValueError, KeyError):
+                    continue  # malformed stored doc: skip, never 500 the listing
                 e = import_meta_entry(doc)
             else:
                 continue
@@ -556,6 +596,7 @@ def get_datasets(species: str | None = None):
 
 @app.get("/api/datasets/{dataset_id}")
 def get_dataset(dataset_id: str):
+    _check_id(dataset_id, "dataset")
     meta = registry_entry(dataset_id)
     if meta:
         bundled = _datasets.get(dataset_id)
@@ -611,6 +652,7 @@ def import_dataset(body: dict, x_role: str | None = Header(None)):
 @app.delete("/api/datasets/import/{dataset_id}")
 def delete_import(dataset_id: str, x_role: str | None = Header(None)):
     require_researcher(x_role)
+    _check_id(dataset_id, "dataset")
     if dataset_id not in _imported_ids and import_store_get(dataset_id) is None:
         raise HTTPException(404, f"unknown imported dataset '{dataset_id}'")
     try:
@@ -799,7 +841,7 @@ def get_experiment(exp_id: str):
 @app.post("/api/simulations")
 def post_simulation(body: dict, x_role: str | None = Header(None)):
     require_researcher(x_role)
-    record = read_experiment(body.get("experiment_id", "").upper())
+    record = read_experiment(body.get("experiment_id") or "")
     steps = len(get_connectome(record["dataset_id"]).nodes) * int(record.get("duration_ms", 0))
     if steps > MAX_SIM_STEPS:
         raise HTTPException(413, f"circuit too large for this duration "

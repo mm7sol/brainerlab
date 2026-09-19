@@ -27,5 +27,9 @@ GET /experiment/{id}         # human page (HTML)
 ```
 
 `POST /api/experiments` validates: known dataset, known model, known parameters, known
-neuron/edge IDs; unknown names → 422 (never silently ignored). Auth (M10): roles
+neuron/edge IDs; unknown names → 422 (never silently ignored). `dataset_id` and
+experiment IDs double as store filenames: only plain slugs
+(`[A-Za-z0-9_-]`, ≤121 chars) are accepted — anything else → 422 before any
+store access (path traversal rejected, see `tests/test_all.py::TestSecurity`).
+Auth (M10): roles
 visitor/researcher/admin; V1 accepts optional `X-Role` header, POSTs need researcher+.
